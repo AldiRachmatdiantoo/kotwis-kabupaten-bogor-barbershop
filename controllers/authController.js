@@ -7,27 +7,26 @@ const generateAccessToken = (payload) => {
 
 export const login = async (req, res, next) => {
   const findUser = await authService.handleLogin(req.body);
+  const sessionId = crypto.randomUUID();
   const payload = {
     id: findUser.id,
     name: findUser.name,
     role: findUser.role,
+    sessionId
   };
 
   const accessToken = generateAccessToken(payload);
   const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_RAHASIUY, {
     expiresIn: "1d",
   });
+  const decode = jwt.decode(refreshToken); 
+
   res.cookie("refreshtoken", refreshToken, {
     httpOnly: true,
     sameSite: "strict",
-    secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
-  const decodedRefreshToken = jwt.verify(
-    refreshToken,
-    process.env.REFRESH_TOKEN_RAHASIUY,
-  );
-  await authService.handleRefreshToken(decodedRefreshToken, refreshToken);
+  await authService.insertRefreshToken(decode, refreshToken);
 
   res.json({ accessToken: accessToken });
 };

@@ -8,7 +8,7 @@ export const handleLogin = async (rawData) => {
   if (!getUser) throw AppError.badRequest("Username atau password salah");
   return getUser;
 };
-export const handleRefreshToken = async (data, refreshToken) => {
+export const insertRefreshToken = async (data, refreshToken) => {
   const insertToken = await authRepository.insertRefreshToken(
     data,
     refreshToken,

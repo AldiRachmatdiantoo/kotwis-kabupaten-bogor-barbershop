@@ -12,6 +12,7 @@ export const insertRefreshToken = async (data, refreshToken) => {
     user_id: data.id,
     token: refreshToken,
     expires_at: new Date(data.exp * 1000),
+    session_id: data.sessionId
   });
 };
 export const checkToken = async (token) => {
@@ -21,4 +22,10 @@ export const deleteToken = async (token) => {
   return await knex("refresh_tokens").where("token", token).update({
     is_revoked: true,
   });
+};
+export const checkRevokedToken = async (id) => {
+  return await knex("refresh_tokens")
+    .select("is_revoked")
+    .where("session_id", id)
+    .first();
 };
