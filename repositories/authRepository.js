@@ -1,10 +1,9 @@
 import { conn as knex } from "../connection.js";
 
-export const findUser = async (name, password) => {
+export const findUser = async (name) => {
   return await knex("users")
     .select("*")
     .where("name", name)
-    .where("password", password)
     .first();
 };
 export const insertRefreshToken = async (data, refreshToken) => {
@@ -16,10 +15,10 @@ export const insertRefreshToken = async (data, refreshToken) => {
   });
 };
 export const checkToken = async (token) => {
-  return await knex("refresh_tokens").select("*").where("token", token).first();
+  return await knex("refresh_tokens").select("*").where("session_id", token).first();
 };
 export const deleteToken = async (token) => {
-  return await knex("refresh_tokens").where("token", token).update({
+  return await knex("refresh_tokens").where("session_id", token).update({
     is_revoked: true,
   });
 };

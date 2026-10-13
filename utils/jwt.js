@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import bcrypt from "bcryptjs";
 
 export const generateAccessToken = (payload) => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "30s" });

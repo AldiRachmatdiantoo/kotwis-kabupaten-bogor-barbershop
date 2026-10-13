@@ -5,7 +5,6 @@ import { AppError } from "../utils/AppError.js";
 export const authenticate = async (req, res, next)=> {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
-  console.log(token);
   if (!token) throw AppError.forbidden("TIDAK BOLEH MASUK");
   try {
     // decoded = data
