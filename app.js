@@ -1,17 +1,20 @@
 import express from "express";
 import { checkConnection } from "./connection.js";
-import authRoute from "./auth.route.js";
+import route from "./route.js";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import { handleError } from "./middlewares/errorHandler.js";
 const app = express();
 const PORT = 3000;
 
-
+app.use((req, res, next) => {
+  if (req.method === "GET") delete req.headers["content-type"];
+  next();
+});
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(authRoute);
+app.use(route);
 app.use(handleError);
 
 app.listen(PORT, () => {

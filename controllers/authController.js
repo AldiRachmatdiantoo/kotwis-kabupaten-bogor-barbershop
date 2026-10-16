@@ -9,13 +9,6 @@ export const login = async (req, res, next) => {
   });
   res.json({ accessToken: token.accessToken });
 };
-export const dashboard = async (req, res, next) => {
-  return res.json({
-    status: true,
-    message: "Welcome back! " + req.user.name,
-    data: req.user,
-  });
-};
 export const refresh = async (req, res, next) => {
   const accessToken = await authService.handleRefresh(req.cookies.refreshtoken);
   return res.json({ accessToken: accessToken });

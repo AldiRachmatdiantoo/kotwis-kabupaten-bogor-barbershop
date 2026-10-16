@@ -9,7 +9,7 @@ export const up = function(knex) {
     table.string("password").notNullable();
     table.string("phone").notNullable();
     table.string("address").nullable();
-    table.enu("role", ["customer", "admin", "manager"]);
+    table.enu("role", ["customer", "admin", "manager"]).notNullable();
     table.timestamps();
   })
 };
