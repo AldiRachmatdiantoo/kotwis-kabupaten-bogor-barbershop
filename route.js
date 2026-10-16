@@ -6,7 +6,7 @@ import * as serviceController from "./controllers/serviceController.js";
 
 const route = Router();
 
-// Login Router
+// Authentication
 route.post("/login", catchAsyncError(authController.login));
 route.get("/refresh", catchAsyncError(authController.refresh));
 route.put("/logout", authenticate, catchAsyncError(authController.logout));
