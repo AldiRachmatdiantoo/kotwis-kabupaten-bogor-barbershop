@@ -1,7 +1,7 @@
 import * as bookingService from "../services/bookingService.js";
 
 export const index = async (req, res, next) => {
-  const getData = await bookingService.getUserBooking(req.user.id);
+  const getData = await bookingService.findAllBooking(req.user.id);
   res.status(200).json({
     status: "success",
     message: "Data berhasil diambil!",
@@ -24,5 +24,3 @@ export const store = async (req, res, next) => {
     data: storeData,
   });
 };
-export const update = async (req, res, next) => {};
-export const destroy = async (req, res, next) => {};

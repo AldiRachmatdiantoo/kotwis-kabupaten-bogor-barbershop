@@ -22,6 +22,8 @@ route.delete("/services/:id", authenticate, verifyRole(['admin']), catchAsyncErr
 route.get("/bookings", authenticate, verifyRole(['customer']), catchAsyncError(bookingController.index));
 route.get("/bookings/:id", authenticate, verifyRole(['customer']), catchAsyncError(bookingController.show))
 route.post("/bookings", authenticate, verifyRole(['customer']), catchAsyncError(bookingController.store));
+route.put("/bookings/:id", authenticate, verifyRole(['customer']), catchAsyncError(bookingController.update));
+route.delete("/bookings/:id", authenticate, verifyRole(['customer']), catchAsyncError(bookingController.destroy));
 
 
 export default route;

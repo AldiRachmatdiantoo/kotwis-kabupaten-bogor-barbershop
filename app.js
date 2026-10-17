@@ -4,6 +4,7 @@ import route from "./route.js";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
 import { handleError } from "./middlewares/errorHandler.js";
+import "./crons/doneCron.js";
 const app = express();
 const PORT = 3000;
 

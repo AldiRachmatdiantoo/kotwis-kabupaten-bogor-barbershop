@@ -26,7 +26,7 @@ export const store = async (req, res, next) => {
 };
 export const update = async (req, res, next) => {
   const data = await serviceService.updateData(req.params.id, req.body);
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
     message: "data berhasil diperbarui",
     data: data,
@@ -34,7 +34,7 @@ export const update = async (req, res, next) => {
 };
 export const destroy = async (req, res, next) => {
   const data = await serviceService.deleteData(req.params.id);
-  res.status(201).json({
+  res.status(200).json({
     status: "success",
     message: "data berhasil dihapus!",
     data: data,

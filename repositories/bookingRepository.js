@@ -1,5 +1,28 @@
 import { conn as knex } from "../connection.js";
 
+export const getAllBooking = async (userId) => {
+  return await knex("bookings")
+    .where("bookings.user_id", userId)
+    .leftJoin("users", "bookings.user_id", "users.id")
+    .leftJoin("service_bookings", "bookings.id", "service_bookings.booking_id")
+    .leftJoin("services", "service_bookings.service_id", "services.id")
+    .select(
+      "bookings.id as booking_id",
+      "bookings.user_id",
+      "bookings.price_total as booking_price",
+      "bookings.status",
+      "bookings.description",
+      "bookings.active_at as active_at",
+      "bookings.ends_at as ends_at",
+      "bookings.done as done",
+      "users.name as user_name",
+      "services.id as service_id",
+      "services.name as service_name",
+      "services.price as service_price",
+      "services.description as service_description",
+    );
+};
+
 export const getOneBooking = async (bookingId, userId) => {
   return await knex("bookings")
     .where("bookings.user_id", userId)
@@ -13,6 +36,9 @@ export const getOneBooking = async (bookingId, userId) => {
       "bookings.price_total as booking_price",
       "bookings.status",
       "bookings.description",
+      "bookings.active_at as active_at",
+      "bookings.ends_at as ends_at",
+      "bookings.done as done",
       "users.name as user_name",
       "services.id as service_id",
       "services.name as service_name",
@@ -21,7 +47,7 @@ export const getOneBooking = async (bookingId, userId) => {
     );
 };
 
-export const makeBooking = async (id, data, servicesData) => {
+export const makeBooking = async (data, servicesData) => {
   const booking = await knex.transaction(async (trx) => {
     const [insertBooking] = await trx("bookings").insert(data);
     const bookingId = insertBooking;
@@ -44,3 +70,14 @@ export const makeBooking = async (id, data, servicesData) => {
   });
   return booking;
 };
+export const checkDoneStatus = async (updatedTime) => {
+  return await knex("bookings")
+    .where("ends_at", "<=", updatedTime)
+    .where("done", false)
+    .select("*");
+};
+export const changeDoneStatus = async (id)=> {
+  return await knex("bookings").where("id", id).update({
+    done: true
+  });
+}
