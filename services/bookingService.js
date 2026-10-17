@@ -18,20 +18,24 @@ export const getUserBooking = async (id) => {
 };
 export const findOneBooking = async (bookingId, userId) => {
   return await knex("bookings")
-    .where("user_id", userId)
+    .where("bookings.user_id", userId)
     .where("bookings.id", bookingId)
-    .join("users", "bookings.user_id", "users.id")
+    .leftJoin("users", "bookings.user_id", "users.id")
+    .leftJoin("service_bookings", "bookings.id", "service_bookings.booking_id")
+    .leftJoin("services", "service_bookings.service_id", "services.id")
     .select(
       "bookings.id as booking_id",
       "bookings.user_id",
       "bookings.price_total",
       "bookings.status",
       "bookings.description",
+      "users.name as nama_user",
+      "services.name as nama_service",
     );
 };
 
 export const createBooking = async (userId, data) => {
-  const { description, paid, services } = data;
+  const { description, paid, services} = data;
 
   if (!(await userRepository.findOne(userId)))
     throw AppError.forbidden("ID Salah!");
