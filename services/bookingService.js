@@ -17,7 +17,7 @@ export const getUserBooking = async (id) => {
     );
 };
 export const findOneBooking = async (bookingId, userId) => {
-  return await knex("bookings")
+  const rows = await knex("bookings")
     .where("bookings.user_id", userId)
     .where("bookings.id", bookingId)
     .leftJoin("users", "bookings.user_id", "users.id")
@@ -26,16 +26,57 @@ export const findOneBooking = async (bookingId, userId) => {
     .select(
       "bookings.id as booking_id",
       "bookings.user_id",
-      "bookings.price_total",
+      "bookings.price_total as booking_price",
       "bookings.status",
       "bookings.description",
-      "users.name as nama_user",
-      "services.name as nama_service",
+      "users.name as user_name",
+      "services.id as service_id",
+      "services.name as service_name",
+      "services.price as service_price",
+      "services.description as service_description",
     );
+  const users = [];
+  for (const row in rows) {
+    // cek apakah user ada
+    let user = users.find((u) => rows[row].user_id === u.id);
+    if (!user) {
+      user = {
+        id: rows[row].user_id,
+        name: rows[row].user_name,
+        bookings: [],
+      };
+      users.push(user);
+    }
+    // cek apakah bookings ada
+    let booking = user.bookings.find((b) => rows[row].booking_id === b.id);
+    if (user.bookings != null && !booking) {
+      booking = {
+        id: rows[row].booking_id,
+        description: rows[row].description,
+        price: rows[row].booking_price,
+        services: [],
+      };
+      user.bookings.push(booking);
+    }
+    // masukkan services ke booking
+    if (
+      booking &&
+      rows[row].service_id != null &&
+      !booking.services.some((s) => rows[row].service_id === s.id)
+    ) {
+      booking.services.push({
+        id: rows[row].service_id,
+        name: rows[row].service_name,
+        price: rows[row].service_price,
+        description: rows[row].service_description,
+      });
+    }
+  }
+  return users;
 };
 
 export const createBooking = async (userId, data) => {
-  const { description, paid, services} = data;
+  const { description, paid, services } = data;
 
   if (!(await userRepository.findOne(userId)))
     throw AppError.forbidden("ID Salah!");
