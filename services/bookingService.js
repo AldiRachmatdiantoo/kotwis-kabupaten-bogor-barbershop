@@ -17,24 +17,8 @@ export const getUserBooking = async (id) => {
     );
 };
 export const findOneBooking = async (bookingId, userId) => {
-  const rows = await knex("bookings")
-    .where("bookings.user_id", userId)
-    .where("bookings.id", bookingId)
-    .leftJoin("users", "bookings.user_id", "users.id")
-    .leftJoin("service_bookings", "bookings.id", "service_bookings.booking_id")
-    .leftJoin("services", "service_bookings.service_id", "services.id")
-    .select(
-      "bookings.id as booking_id",
-      "bookings.user_id",
-      "bookings.price_total as booking_price",
-      "bookings.status",
-      "bookings.description",
-      "users.name as user_name",
-      "services.id as service_id",
-      "services.name as service_name",
-      "services.price as service_price",
-      "services.description as service_description",
-    );
+  const rows = await bookingRepository.getOneBooking(bookingId, userId);
+  if (rows.length === 0) return "Belum ada Booking yang dibuat";
   const users = [];
   for (const row in rows) {
     // cek apakah user ada
